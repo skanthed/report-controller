@@ -1,0 +1,14 @@
+apiVersion: curator.operatefirst.io/v1alpha1
+kind: FetchData
+metadata:
+  name: sample-1
+spec:
+  cronjobNamespace: koku-metrics-operator
+  schedule: "0 */6 * * *"
+  backupSrc: /tmp/koku-metrics-operator-data/upload
+  unzipDir: /tmp/koku-metrics-operator-data/s3sync
+  databaseName: curatordb
+  databasePassword: M5rBgWkN8LfjeyI8
+  databaseUser: curator
+  databaseHostName: postgresql.koku-metrics-operator.svc
+  databasePort: "5432"

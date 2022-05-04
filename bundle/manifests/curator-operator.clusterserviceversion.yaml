@@ -1,0 +1,362 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "curator.operatefirst.io/v1alpha1",
+          "kind": "CuratorConfig",
+          "metadata": {
+            "name": "curatorconfig-sample"
+          },
+          "spec": null
+        },
+        {
+          "apiVersion": "curator.operatefirst.io/v1alpha1",
+          "kind": "FetchData",
+          "metadata": {
+            "name": "fetchdata-sample"
+          },
+          "spec": {
+            "backupSrc": "/tmp/koku-metrics-operator-data/upload",
+            "cronjobNamespace": "koku-metrics-operator",
+            "databaseHostName": "\u003chostname or host ip\u003e",
+            "databaseName": "\u003cdatabase-name\u003e",
+            "databasePassword": "\u003cpassword\u003e",
+            "databasePort": "\u003cport-number\u003e",
+            "databaseUser": "\u003cuser-name\u003e",
+            "schedule": "0 */6 * * *",
+            "unzipDir": "/tmp/koku-metrics-operator-data/s3sync"
+          }
+        },
+        {
+          "apiVersion": "curator.operatefirst.io/v1alpha1",
+          "kind": "Report",
+          "metadata": {
+            "name": "namespace-cpu-request-report-sample"
+          },
+          "spec": {
+            "namespace": "default",
+            "reportingEnd": "2022-12-30T23:59:59Z",
+            "reportingStart": "2022-03-01T00:32:00Z",
+            "schedule": {
+              "hourly": {
+                "minute": 32,
+                "second": 2
+              },
+              "period": "hourly"
+            }
+          }
+        }
+      ]
+    capabilities: Basic Install
+    operators.operatorframework.io/builder: operator-sdk-v1.16.0+git
+    operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
+  name: curator-operator.v0.0.1
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: CuratorConfig is the Schema for the curatorconfigs API
+      displayName: Curator Config
+      kind: CuratorConfig
+      name: curatorconfigs.curator.operatefirst.io
+      version: v1alpha1
+    - description: FetchData is the Schema for the fetchdata API
+      displayName: Fetch Data
+      kind: FetchData
+      name: fetchdata.curator.operatefirst.io
+      version: v1alpha1
+    - description: Report is the Schema for the reports API
+      displayName: Report
+      kind: Report
+      name: reports.curator.operatefirst.io
+      version: v1alpha1
+  description: stub
+  displayName: curator-operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - batch
+          resources:
+          - cronjobs
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - batch
+          resources:
+          - cronjobs/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - batch
+          resources:
+          - cronjobs/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - batch
+          resources:
+          - jobs
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - batch
+          resources:
+          - jobs/status
+          verbs:
+          - get
+        - apiGroups:
+          - ""
+          resources:
+          - persistentvolumeclaims
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - update
+          - watch
+        - apiGroups:
+          - ""
+          resources:
+          - persistentvolumeclaims/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - curator.operatefirst.io
+          resources:
+          - curatorconfigs
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - curator.operatefirst.io
+          resources:
+          - curatorconfigs/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - curator.operatefirst.io
+          resources:
+          - curatorconfigs/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - curator.operatefirst.io
+          resources:
+          - fetchdata
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - curator.operatefirst.io
+          resources:
+          - fetchdata/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - curator.operatefirst.io
+          resources:
+          - fetchdata/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - curator.operatefirst.io
+          resources:
+          - reports
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - curator.operatefirst.io
+          resources:
+          - reports/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - curator.operatefirst.io
+          resources:
+          - reports/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - authentication.k8s.io
+          resources:
+          - tokenreviews
+          verbs:
+          - create
+        - apiGroups:
+          - authorization.k8s.io
+          resources:
+          - subjectaccessreviews
+          verbs:
+          - create
+        serviceAccountName: curator-operator-controller-manager
+      deployments:
+      - name: curator-operator-controller-manager
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              control-plane: controller-manager
+          strategy: {}
+          template:
+            metadata:
+              annotations:
+                kubectl.kubernetes.io/default-container: manager
+              labels:
+                control-plane: controller-manager
+            spec:
+              containers:
+              - args:
+                - --secure-listen-address=0.0.0.0:8443
+                - --upstream=http://127.0.0.1:8080/
+                - --logtostderr=true
+                - --v=0
+                image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
+                name: kube-rbac-proxy
+                ports:
+                - containerPort: 8443
+                  name: https
+                  protocol: TCP
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 128Mi
+                  requests:
+                    cpu: 5m
+                    memory: 64Mi
+              - args:
+                - --health-probe-bind-address=:8081
+                - --metrics-bind-address=127.0.0.1:8080
+                - --leader-elect
+                command:
+                - /manager
+                image: quay.io/operate-first/curator-operator:v0.0.1
+                livenessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 8081
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                name: manager
+                readinessProbe:
+                  httpGet:
+                    path: /readyz
+                    port: 8081
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 128Mi
+                  requests:
+                    cpu: 10m
+                    memory: 64Mi
+                securityContext:
+                  allowPrivilegeEscalation: false
+              securityContext:
+                runAsNonRoot: true
+              serviceAccountName: curator-operator-controller-manager
+              terminationGracePeriodSeconds: 10
+      permissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - configmaps
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - coordination.k8s.io
+          resources:
+          - leases
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - events
+          verbs:
+          - create
+          - patch
+        serviceAccountName: curator-operator-controller-manager
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - metering
+  - metrics
+  - reporting
+  links:
+  - name: Documentation
+    url: https://curator-doc.readthedocs.io/en/latest/
+  maturity: alpha
+  provider:
+    name: Red Hat Inc.
+    url: https://github.com/operate-first/curator
+  version: 0.0.1

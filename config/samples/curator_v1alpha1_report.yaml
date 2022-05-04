@@ -1,0 +1,12 @@
+apiVersion: curator.operatefirst.io/v1alpha1
+kind: Report
+metadata:
+  name: day-report
+spec:
+  cronjobNamespace: koku-metrics-operator
+  schedule: "*/2 * * * *"
+  databaseName: 
+  databasePassword: 
+  databaseUser: 
+  databaseHostName: 
+  databasePort: 

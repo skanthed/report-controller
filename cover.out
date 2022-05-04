@@ -1,0 +1,27 @@
+mode: set
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:63.101,69.16 4 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:77.2,77.51 1 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:82.2,82.27 1 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:69.16,70.29 1 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:70.29,74.4 2 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:77.51,80.3 2 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:85.81,86.71 1 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:92.2,92.12 1 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:86.71,87.82 1 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:87.82,89.4 1 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:95.91,99.2 3 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:101.88,180.2 2 0
+github.com/operate-first/curator-operator/controllers/fetchdata_controller.go:183.72,187.2 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:59.98,70.16 6 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:78.2,78.44 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:83.2,83.27 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:70.16,71.29 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:71.29,75.4 2 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:78.44,81.3 2 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:86.71,87.71 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:93.2,93.12 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:87.71,88.85 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:88.85,90.4 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:96.93,100.2 3 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:102.88,157.2 2 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:160.69,164.2 1 0

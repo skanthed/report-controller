@@ -1,0 +1,36 @@
+domain: operatefirst.io
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: curator-operator
+repo: github.com/operate-first/curator-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: operatefirst.io
+  group: curator
+  kind: Report
+  path: github.com/operate-first/curator-operator/api/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: operatefirst.io
+  group: curator
+  kind: CuratorConfig
+  path: github.com/operate-first/curator-operator/api/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: operatefirst.io
+  group: curator
+  kind: FetchData
+  path: github.com/operate-first/curator-operator/api/v1alpha1
+  version: v1alpha1
+version: "3"
