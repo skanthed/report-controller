@@ -18,11 +18,10 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -58,48 +57,42 @@ type ReportReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
 func (r *ReportReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	l := log.FromContext(ctx)
-	fmt.Println("Enter reconcile", req.NamespacedName)
-	//l.Info("reconciling report", "req", req.NamespacedName)
+	l.Info("reconciling request", "req", req.NamespacedName)
+	defer l.Info("finished reconciling req")
 
-	l.Info("Enter reconcile", "req", req)
-	Report := &curatorv1alpha1.Report{}
-
-	//err := r.Get(ctx, types.NamespacedName, Fetchdata)
-
-	err := r.Get(ctx, types.NamespacedName{Name: req.Name, Namespace: req.Namespace}, Report)
-	if err != nil {
-		if errors.IsNotFound(err) {
-			// Request object not found, could have been deleted after reconcile request.
-			l.Info("Report resource not found. Ignoring since object must be deleted.")
-			return ctrl.Result{}, nil
-		}
+	report := &curatorv1alpha1.Report{}
+	if err := r.Get(ctx, req.NamespacedName, report); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
-
-	if err := r.createJob(Report); err != nil {
+	if err := r.reconcileCronJob(ctx, report); err != nil {
 		l.Error(err, "failed to create the CronJob resource")
 		return ctrl.Result{}, err
 	}
-
 	return ctrl.Result{}, nil
 }
 
-func (r *ReportReconciler) createJob(d *curatorv1alpha1.Report) error {
-	if _, err := FetchReportJob(d.Name, d.Namespace, r.Client); err != nil {
-		if err := r.Client.Create(context.TODO(), ReportCronJob(d, r.Scheme)); err != nil {
+func (r *ReportReconciler) reconcileCronJob(ctx context.Context, d *curatorv1alpha1.Report) error {
+	l := log.FromContext(ctx)
+
+	cronJob := &batchv1.CronJob{}
+	if err := r.Get(ctx, types.NamespacedName{Name: d.Name, Namespace: d.Namespace}, cronJob); err != nil {
+		if !apierrors.IsNotFound(err) {
 			return err
 		}
+		// TODO(tflannag): Gracefully handle apierrors.IsAlreadyExists(err) from the r.Create call.
+		l.Info("generating a new cronjob for report", "name", d.Name, "namespace", d.Namespace)
+		cronJob = newCronJobFromReport(d, r.Scheme)
+		return r.Create(ctx, cronJob)
 	}
 
+	// TODO(tflannag): Support updating an existing CronJob resource?
+	l.Info("cronjob already exists -- not creating another one")
 	return nil
 }
 
-func FetchReportJob(name, namespace string, client client.Client) (*batchv1.CronJob, error) {
-	cronJob := &batchv1.CronJob{}
-	err := client.Get(context.TODO(), types.NamespacedName{Name: name, Namespace: namespace}, cronJob)
-	return cronJob, err
-}
-
-func ReportCronJob(d *curatorv1alpha1.Report, scheme *runtime.Scheme) *batchv1.CronJob {
+func newCronJobFromReport(d *curatorv1alpha1.Report, scheme *runtime.Scheme) *batchv1.CronJob {
+	// TODO(tflannag): Add owner references for this generated CronJob resource where the
+	// parent is the parameter's Report resource.
 	cronjob := &batchv1.CronJob{
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Cronjob",
@@ -141,7 +134,10 @@ func ReportCronJob(d *curatorv1alpha1.Report, scheme *runtime.Scheme) *batchv1.C
 											Value: d.Spec.DatabasePort,
 										},
 									},
-									Command: []string{"python3", "echo", "Hello"},
+									Command: []string{"psql"},
+									Args: []string{
+										"--help",
+									},
 								},
 							},
 
@@ -158,6 +154,7 @@ func ReportCronJob(d *curatorv1alpha1.Report, scheme *runtime.Scheme) *batchv1.C
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *ReportReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	// TODO(tflannag): watches CronJob resources that contains an owner reference to a Report resource
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&curatorv1alpha1.Report{}).
 		Complete(r)
