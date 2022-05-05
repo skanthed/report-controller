@@ -18,9 +18,9 @@ github.com/operate-first/curator-operator/controllers/report_controller.go:83.2,
 github.com/operate-first/curator-operator/controllers/report_controller.go:70.16,71.29 1 0
 github.com/operate-first/curator-operator/controllers/report_controller.go:71.29,75.4 2 0
 github.com/operate-first/curator-operator/controllers/report_controller.go:78.44,81.3 2 0
-github.com/operate-first/curator-operator/controllers/report_controller.go:86.71,87.71 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:86.71,87.73 1 0
 github.com/operate-first/curator-operator/controllers/report_controller.go:93.2,93.12 1 0
-github.com/operate-first/curator-operator/controllers/report_controller.go:87.71,88.85 1 0
+github.com/operate-first/curator-operator/controllers/report_controller.go:87.73,88.85 1 0
 github.com/operate-first/curator-operator/controllers/report_controller.go:88.85,90.4 1 0
 github.com/operate-first/curator-operator/controllers/report_controller.go:96.93,100.2 3 0
 github.com/operate-first/curator-operator/controllers/report_controller.go:102.88,157.2 2 0

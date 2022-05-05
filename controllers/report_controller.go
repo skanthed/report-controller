@@ -84,7 +84,7 @@ func (r *ReportReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 }
 
 func (r *ReportReconciler) createJob(d *curatorv1alpha1.Report) error {
-	if _, err := FetchCronJob(d.Name, d.Namespace, r.Client); err != nil {
+	if _, err := FetchReportJob(d.Name, d.Namespace, r.Client); err != nil {
 		if err := r.Client.Create(context.TODO(), ReportCronJob(d, r.Scheme)); err != nil {
 			return err
 		}

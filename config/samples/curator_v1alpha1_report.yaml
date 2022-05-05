@@ -5,8 +5,8 @@ metadata:
 spec:
   cronjobNamespace: koku-metrics-operator
   schedule: "*/2 * * * *"
-  databaseName: 
-  databasePassword: 
-  databaseUser: 
-  databaseHostName: 
-  databasePort: 
+  databaseName: curatordb
+  databasePassword: M5rBgWkN8LfjeyI8
+  databaseUser: curator
+  databaseHostName: postgresql.koku-metrics-operator.svc
+  databasePort: "5432"
