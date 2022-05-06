@@ -79,20 +79,18 @@ func (r *ReportReconciler) reconcileCronJob(ctx context.Context, d *curatorv1alp
 		if !apierrors.IsNotFound(err) {
 			return err
 		}
-		// TODO(tflannag): Gracefully handle apierrors.IsAlreadyExists(err) from the r.Create call.
+		
 		l.Info("generating a new cronjob for report", "name", d.Name, "namespace", d.Namespace)
 		cronJob = newCronJobFromReport(d, r.Scheme)
 		return r.Create(ctx, cronJob)
 	}
 
-	// TODO(tflannag): Support updating an existing CronJob resource?
+	
 	l.Info("cronjob already exists -- not creating another one")
 	return nil
 }
 
 func newCronJobFromReport(d *curatorv1alpha1.Report, scheme *runtime.Scheme) *batchv1.CronJob {
-	// TODO(tflannag): Add owner references for this generated CronJob resource where the
-	// parent is the parameter's Report resource.
 	cronjob := &batchv1.CronJob{
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Cronjob",
@@ -134,9 +132,9 @@ func newCronJobFromReport(d *curatorv1alpha1.Report, scheme *runtime.Scheme) *ba
 											Value: d.Spec.DatabasePort,
 										},
 									},
-									Command: []string{"psql"},
+									Command: []string{"sh", "-c", "psql", "-d", "postgresql://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_HOST_NAME:$PORT_NUMBER/$DATABASE_NAME", "-c", "SELECT generate_report('day');"},
 									Args: []string{
-										"--help",
+										"",
 									},
 								},
 							},
@@ -154,7 +152,6 @@ func newCronJobFromReport(d *curatorv1alpha1.Report, scheme *runtime.Scheme) *ba
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *ReportReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	// TODO(tflannag): watches CronJob resources that contains an owner reference to a Report resource
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&curatorv1alpha1.Report{}).
 		Complete(r)
