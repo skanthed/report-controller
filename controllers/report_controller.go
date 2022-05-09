@@ -112,23 +112,23 @@ func newCronJobFromReport(d *curatorv1alpha1.Report, scheme *runtime.Scheme) *ba
 									Image: "docker.io/library/postgres:13.0",
 									Env: []corev1.EnvVar{
 										{
-											Name:  "DATABASE_NAME",
+											Name:  "PGDATABASE",
 											Value: d.Spec.DatabaseName,
 										},
 										{
-											Name:  "DATABASE_USER",
+											Name:  "PGUSER",
 											Value: d.Spec.DatabaseUser,
 										},
 										{
-											Name:  "DATABASE_PASSWORD",
+											Name:  "PGPASSWORD",
 											Value: d.Spec.DatabasePassword,
 										},
 										{
-											Name:  "DATABASE_HOST_NAME",
+											Name:  "PGHOST",
 											Value: d.Spec.DatabaseHostName,
 										},
 										{
-											Name:  "PORT_NUMBER",
+											Name:  "PGPORT",
 											Value: d.Spec.DatabasePort,
 										},
 									},
