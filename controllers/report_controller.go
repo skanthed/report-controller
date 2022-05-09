@@ -132,7 +132,7 @@ func newCronJobFromReport(d *curatorv1alpha1.Report, scheme *runtime.Scheme) *ba
 											Value: d.Spec.DatabasePort,
 										},
 									},
-									Command: []string{"sh", "-c", "psql", "-d", "postgresql://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_HOST_NAME:$PORT_NUMBER/$DATABASE_NAME", "-c", "SELECT generate_report('day');"},
+									Command: []string{"psql","-c", "'SELECT generate_report('day');'"},
 									Args: []string{
 										"",
 									},
